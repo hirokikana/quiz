@@ -21,7 +21,8 @@
           <div class="card-header">Info</div>
           <div class="card-body">
             <h5 class="card-title"></h5>
-            <p class="card-text"></p>
+            <p class="card-text">UPLOAD API: {{ upload_api }}</p>
+            <p class="card-text">CONNECTION ID: {{ connection_id }}</p>
           </div>
         </div>
 
@@ -36,10 +37,20 @@
         </div>
 
         
+        <div v-if="img">
+          <div class="card text-dark bg-light mb-3" style="margin-left: auto; margin-right: auto; width: 1024px;">
+            <div class="card-header">Answer Preview</div>
+            <div class="card-body">
+              <img v-bind:src=img width="208" height="154" style="background-color: #214fe9; margin: 0px">
+            </div>
+          </div>
+        </div>
+        
         <div class="alert alert-secondary" role="alert" v-if="message">
           {{ message }}
         </div>
 
+        
         
         <div class="m-1"> 
           WebSocket URL : <input type="text" id="websocketurl">

@@ -1,7 +1,7 @@
 
 Vue.component('answer-list', {
     props: ['answer'],
-    template: '<div><img v-bind:src=answer.canvas width="700" height="400" style="background-color: #214fe9; margin: 0px"></canvas><h2 class="text-center text-light" style="background-color: #214fe9; width: 700px; margin-top: -10px">{{ answer.name }}</h2></div>'
+    template: '<div><img v-bind:src=answer.canvas width="1024" height="768" style="background-color: #214fe9; margin: 0px"></canvas><h2 class="text-center text-light" style="background-color: #214fe9; width: 700px; margin-top: -10px">{{ answer.name }}</h2></div>'
 });
 
 var websocket;
