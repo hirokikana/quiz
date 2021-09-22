@@ -49,7 +49,7 @@ Vue.component('answer-area', {
         },
     },
 
-    template: '<div id="canvas-area"><canvas id="myCanvas" class="m-0" width="1024px" height="768px"  @mousedown="dragStart" @mouseup="dragEnd" @mouseout="dragEnd" @mousemove="draw"></canvas></div>'
+    template: '<canvas id="myCanvas" width="1024px" height="768px"  @mousedown="dragStart" @mouseup="dragEnd" @mouseout="dragEnd" @mousemove="draw"></canvas>'
 });
 
 
@@ -59,14 +59,15 @@ var app = new Vue({
     el: '#app',
     data: {
       message: '',
-      name: '',
+      name: '　',
       debugmessages: [],
     },
   methods:{
 
     adddebug: function(msg) {
       self = this;
-      var message = new Date().toISOString() + " " + msg;
+      var message = new Date().toISOString() + " " + (typeof(msg) == "string" ? msg : JSON.stringify(msg));
+      console.log(msg);
       self.debugmessages.unshift(message);
     },
         submit: function() {
@@ -84,16 +85,16 @@ var app = new Vue({
             context = document.querySelector('#myCanvas').getContext('2d');
             context.beginPath();
             context.fillStyle = '#214fe9';
-            context.fillRect(0,0, 700, 400);
+            context.fillRect(0,0, 1024, 768);
         },
         connect : function() {
             self = this;
             var websocketurl = document.querySelector('#websocketurl').value;
             websocket = new WebSocket(websocketurl);
             websocket.onopen = function(event) {
-                self.adddebug('######### WebSocket opened');
+              self.adddebug('opened ' + event.target.url);
                 self.name = document.querySelector('#answerer-name').value;
-                self.message = '接続が完了しました';
+                self.message = '接続しました';
             };
     
             websocket.onmessage = function(event) {
@@ -107,8 +108,7 @@ var app = new Vue({
             };
     
             websocket.onclose = function(event) {
-                self.adddebug(event);
-                self.adddebug('######### WebSocket closed');
+                self.adddebug('closed ' + event.target.url);
                 self.message = '切断しました';
             }
         },
