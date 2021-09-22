@@ -15,7 +15,7 @@ Vue.component('answer-area', {
         this.context.strokeStyle = '#FFF';
         this.context.beginPath();
         this.context.fillStyle = '#214fe9';
-        this.context.fillRect(0,0, 700, 400);
+        this.context.fillRect(0,0, 1024, 768);
     },
     methods: {
 
@@ -49,7 +49,7 @@ Vue.component('answer-area', {
         },
     },
 
-    template: '<div id="canvas-area"><canvas id="myCanvas" width="700" height="400" style="margin: 0px" @mousedown="dragStart" @mouseup="dragEnd" @mouseout="dragEnd" @mousemove="draw"></canvas></div>'
+    template: '<div id="canvas-area"><canvas id="myCanvas" class="m-0" width="1024px" height="768px"  @mousedown="dragStart" @mouseup="dragEnd" @mouseout="dragEnd" @mousemove="draw"></canvas></div>'
 });
 
 
@@ -58,20 +58,25 @@ var websocket;
 var app = new Vue({
     el: '#app',
     data: {
-        message: '',
-        name: ''
+      message: '',
+      name: '',
+      debugmessages: [],
     },
-    methods:{
-        submit: function() {
+  methods:{
 
-            
+    adddebug: function(msg) {
+      self = this;
+      var message = new Date().toISOString() + " " + msg;
+      self.debugmessages.unshift(message);
+    },
+        submit: function() {
             data = {
                 action: 'submitAnswer',
                 name: this.name,
                 answer: document.querySelector('#myCanvas').toDataURL(),
             }
             websocket.send(JSON.stringify(data));
-            console.log(data);
+            self.adddebug(data);
             self.message = '回答を送信しました';
 
         },
@@ -86,24 +91,24 @@ var app = new Vue({
             var websocketurl = document.querySelector('#websocketurl').value;
             websocket = new WebSocket(websocketurl);
             websocket.onopen = function(event) {
-                console.log('######### WebSocket opened');
+                self.adddebug('######### WebSocket opened');
                 self.name = document.querySelector('#answerer-name').value;
                 self.message = '接続が完了しました';
             };
     
             websocket.onmessage = function(event) {
                 var data = JSON.parse(event.data);
-                console.log(data);
+                self.adddebug(data);
                 self.message = data.msg;
             };
     
             websocket.onerror = function(event) {
-                console.log(event);
+                self.adddebug(event);
             };
     
             websocket.onclose = function(event) {
-                console.log(event);
-                console.log('######### WebSocket closed');
+                self.adddebug(event);
+                self.adddebug('######### WebSocket closed');
                 self.message = '切断しました';
             }
         },
