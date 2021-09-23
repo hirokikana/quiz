@@ -1,7 +1,7 @@
 
 Vue.component('answer-list', {
-    props: ['answer'],
-    template: '<div><img v-bind:src=answer.canvas width="1024" height="768" style="background-color: #214fe9; margin: 0px"></canvas><h2 class="text-center text-light" style="background-color: #214fe9; width: 700px; margin-top: -10px">{{ answer.name }}</h2></div>'
+  props: ['answer'],
+  template: '<div style="margin-left: auto; margin-right: auto; width: 1024px;"><img v-bind:src=answer.img width="1024" height="768" style="background-color: #214fe9; margin: 0px"></canvas><h2 class="text-center text-light" style="background-color: #214fe9; width: 1024px; margin-top: -10px">{{ answer.name }}</h2></div>'
 });
 
 var websocket;
@@ -27,9 +27,16 @@ var app = new Vue({
     
             websocket.onmessage = function(event) {
                 console.log(event.data.name);
-                var hoge = JSON.parse(event.data);
-                console.log(hoge);
-                self.addanswer({name: hoge['name'], canvas: hoge['answer']})
+              var data = JSON.parse(event.data);
+              if(data['message'] == 'submitanswer') {
+                var answer = {};
+                answer['name'] = data['name'];
+                var img_url = data['upload_api'] + 'img/' + data['connection_id'];
+                fetch(img_url).then((response) => { return response.text()}).then((data) => {
+                  answer['img'] = data;
+                  self.addanswer(answer);
+                }).catch((reason) => {console.log(reason);});
+              }
             };
     
             websocket.onerror = function(event) {
